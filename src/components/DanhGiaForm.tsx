@@ -162,41 +162,44 @@ const DanhGiaForm = ({ sanPhamId, taiKhoanId, onSuccess }: DanhGiaFormProps) => 
     }
 
     return (
-        <div className="mt-3">
+        <div className="mt-6">
             {!userDanhGia && !showForm ? (
                 <button
                     onClick={() => setShowForm(true)}
-                    className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
-                    Đánh giá sản phẩm
+                    ✍️ Viết đánh giá
                 </button>
             ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                     {userDanhGia && !isEditing && (
-                        <div className="bg-gray-50 p-3 rounded-lg">
+                        <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-5 shadow-md">
                             <div className="flex items-start justify-between">
                                 <div className="flex-1">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        {renderStars(userDanhGia.soSao || 0)}
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <span className="text-lg font-semibold text-gray-800">Đánh giá của bạn:</span>
+                                        {renderStars(userDanhGia.soSao || 0, 24, true)}
                                     </div>
                                     {userDanhGia.noiDung && (
-                                        <p className="text-sm text-gray-700">{userDanhGia.noiDung}</p>
+                                        <div className="bg-white rounded-lg p-4 border-l-4 border-blue-500 shadow-sm">
+                                            <p className="text-gray-800 leading-relaxed">{userDanhGia.noiDung}</p>
+                                        </div>
                                     )}
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 ml-4">
                                     <button
                                         onClick={handleEdit}
-                                        className="p-1 text-blue-600 hover:bg-gray-200 rounded transition"
+                                        className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all duration-200 hover:scale-110"
                                         title="Sửa đánh giá"
                                     >
-                                        <EditIcon sx={{ fontSize: 18 }} />
+                                        <EditIcon sx={{ fontSize: 20 }} />
                                     </button>
                                     <button
                                         onClick={handleDelete}
-                                        className="p-1 text-red-600 hover:bg-gray-200 rounded transition"
+                                        className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-all duration-200 hover:scale-110"
                                         title="Xóa đánh giá"
                                     >
-                                        <DeleteIcon sx={{ fontSize: 18 }} />
+                                        <DeleteIcon sx={{ fontSize: 20 }} />
                                     </button>
                                 </div>
                             </div>
@@ -204,36 +207,38 @@ const DanhGiaForm = ({ sanPhamId, taiKhoanId, onSuccess }: DanhGiaFormProps) => 
                     )}
 
                     {(showForm || isEditing) && (
-                        <div className="border border-gray-300 rounded-lg p-3 bg-white">
-                            <h4 className="font-semibold mb-3 text-sm">
-                                {isEditing ? 'Sửa đánh giá' : 'Viết đánh giá'}
+                        <div className="bg-white border-2 border-blue-200 rounded-xl p-6 shadow-lg">
+                            <h4 className="font-bold text-xl mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                {isEditing ? '✏️ Sửa đánh giá' : '✍️ Viết đánh giá'}
                             </h4>
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 <div>
-                                    <label className="block text-xs font-medium mb-2">Số sao *</label>
+                                    <label className="block text-sm font-semibold mb-3 text-gray-700">Số sao *</label>
+                                    <div className="bg-gray-50 rounded-lg p-4">
                                     {renderStars(soSao, true)}
+                                    </div>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-medium mb-2">Nội dung đánh giá</label>
+                                    <label className="block text-sm font-semibold mb-3 text-gray-700">Nội dung đánh giá</label>
                                     <textarea
                                         value={noiDung}
                                         onChange={(e) => setNoiDung(e.target.value)}
-                                        placeholder="Chia sẻ trải nghiệm của bạn..."
-                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        rows={3}
+                                        placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                                        className="w-full px-4 py-3 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
+                                        rows={4}
                                         maxLength={255}
                                     />
-                                    <div className="text-xs text-gray-500 mt-1 text-right">
+                                    <div className="text-xs text-gray-500 mt-2 text-right">
                                         {noiDung.length}/255 ký tự
                                     </div>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex gap-3 pt-2">
                                     <button
                                         onClick={handleSubmit}
                                         disabled={submitting}
-                                        className="flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+                                        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 font-semibold shadow-md hover:shadow-lg transform hover:scale-105"
                                     >
-                                        <SendIcon sx={{ fontSize: 16 }} />
+                                        <SendIcon sx={{ fontSize: 18 }} />
                                         {submitting ? 'Đang lưu...' : isEditing ? 'Cập nhật' : 'Gửi đánh giá'}
                                     </button>
                                     <button
@@ -248,7 +253,7 @@ const DanhGiaForm = ({ sanPhamId, taiKhoanId, onSuccess }: DanhGiaFormProps) => 
                                                 setSoSao(userDanhGia.soSao || 5);
                                             }
                                         }}
-                                        className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                                        className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 font-semibold"
                                     >
                                         Hủy
                                     </button>

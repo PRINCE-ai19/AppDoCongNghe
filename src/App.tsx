@@ -26,6 +26,7 @@ import ProfileView from "./pages/Profile/ProfileView";
 import ContactView from "./pages/Contact/ContactView";
 import AdminContact from "./pages/Admin/AdminContact";
 import AdminKhuyenMai from "./pages/Admin/AdminKhuyenMai";
+import AdminOrder from "./pages/Admin/AdminOrder";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
         <Route path="khuyenmai" element={<AdminKhuyenMai/>}/>
         <Route path="giohang" element={<AdminCart/>}/>
         <Route path="lienhe" element={<AdminContact/>}/>
+        <Route path="donhang" element={<AdminOrder/>}/>
       </Route>
 
       {/* Auth Routes */}

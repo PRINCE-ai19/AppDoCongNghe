@@ -31,7 +31,7 @@ const ProductListView = () => {
     const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
     const itemsPerPage = 12;
 
-    // Scroll to top when component mounts
+    
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, []);
@@ -46,7 +46,7 @@ const ProductListView = () => {
     }, [selectedCategory, searchKeyword]);
 
     useEffect(() => {
-        // Update URL params when filters change
+       
         const params = new URLSearchParams();
         if (searchKeyword) params.set('q', searchKeyword);
         if (selectedCategory) params.set('category', selectedCategory.toString());
@@ -110,13 +110,13 @@ const ProductListView = () => {
                     return;
                 }
             } else {
-                // Lấy tất cả
-                result = await layTatCaSanPham();
+                // Lấy tất cả với pagination
+                result = await layTatCaSanPham(currentPage, itemsPerPage);
             }
 
-            if (result.success && result.data) {
+            if (result.success && result.data && result.data.items) {
                 // Filter products that are visible (hienThi !== false)
-                const filtered = result.data.filter((p: SanPham) => p.hienThi !== false);
+                const filtered = result.data.items.filter((p: SanPham) => p.hienThi !== false);
                 setProducts(filtered);
             } else {
                 setProducts([]);

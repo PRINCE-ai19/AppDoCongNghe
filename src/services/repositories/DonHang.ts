@@ -1,5 +1,44 @@
 import api from "../api/api";
 
+export const ORDER_STATUS = {
+    CHO_XU_LY: "Chờ xử lý",
+    DANG_CHUAN_BI: "Đang chuẩn bị hàng",
+    DANG_GIAO: "Đang giao hàng",
+    GIAO_THANH_CONG: "Giao thành công",
+    DA_HUY: "Đã hủy",
+} as const;
+
+export const ORDER_STATUSES: string[] = [
+    ORDER_STATUS.CHO_XU_LY,
+    ORDER_STATUS.DANG_CHUAN_BI,
+    ORDER_STATUS.DANG_GIAO,
+    ORDER_STATUS.GIAO_THANH_CONG,
+    ORDER_STATUS.DA_HUY,
+];
+
+const ORDER_TRANSITIONS: Record<string, string[]> = {
+    [ORDER_STATUS.CHO_XU_LY]: [ORDER_STATUS.DANG_CHUAN_BI, ORDER_STATUS.DA_HUY],
+    [ORDER_STATUS.DANG_CHUAN_BI]: [ORDER_STATUS.DANG_GIAO, ORDER_STATUS.DA_HUY],
+    [ORDER_STATUS.DANG_GIAO]: [ORDER_STATUS.GIAO_THANH_CONG],
+    [ORDER_STATUS.GIAO_THANH_CONG]: [],
+    [ORDER_STATUS.DA_HUY]: [],
+};
+
+const CANCELLABLE_STATUSES: string[] = [
+    ORDER_STATUS.CHO_XU_LY,
+    ORDER_STATUS.DANG_CHUAN_BI,
+];
+
+export const getNextStatuses = (current?: string) => {
+    if (!current) return [];
+    return ORDER_TRANSITIONS[current] ?? [];
+};
+
+export const canCancelOrder = (status?: string) => {
+    if (!status) return false;
+    return CANCELLABLE_STATUSES.includes(status);
+};
+
 export interface ApiResponse<T> {
     success: boolean;
     message: string;
@@ -86,7 +125,7 @@ export const layDonHangTheoTaiKhoan = async (taiKhoanId: number): Promise<ApiRes
         }
 
         // Fallback: nếu response không có format chuẩn, thử parse trực tiếp
-        console.log('Unknown response format, trying direct parse');
+    
         return {
             success: true,
             message: "",
@@ -130,6 +169,87 @@ export const layChiTietDonHang = async (id: number): Promise<ApiResponse<DonHang
             success: false,
             message: "Không thể kết nối đến server!",
             data: {} as DonHangDetail
+        };
+    }
+};
+
+export interface PaginatedOrders {
+    page: number;
+    pageSize: number;
+    total: number;
+    items: DonHang[];
+}
+
+const mapApiResponse = <T>(data: any): ApiResponse<T> => {
+    if (data.Success !== undefined) {
+        return {
+            success: data.Success,
+            message: data.Message || data.message || "",
+            data: data.Data,
+        };
+    }
+
+    return {
+        success: data.success ?? false,
+        message: data.message ?? "",
+        data: data.data,
+    };
+};
+
+export const layDonHangAdmin = async (status?: string, page = 1, pageSize = 20): Promise<ApiResponse<PaginatedOrders>> => {
+    try {
+        const res = await api.get("/api/DonHang/admin", {
+            params: {
+                status,
+                page,
+                pageSize,
+            },
+        });
+        const data = mapApiResponse<PaginatedOrders>(res.data);
+        if (data.success && data.data) {
+            return data;
+        }
+        return {
+            success: false,
+            message: data.message || "Không thể lấy danh sách đơn hàng.",
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error.response?.data?.message || "Không thể kết nối đến server!",
+        };
+    }
+};
+
+export const capNhatTrangThaiDonHang = async (
+    id: number,
+    trangThaiMoi: string,
+    ghiChu?: string
+): Promise<ApiResponse<null>> => {
+    try {
+        const res = await api.patch(`/api/DonHang/${id}/status`, {
+            trangThaiMoi,
+            ghiChu,
+        });
+        return mapApiResponse<null>(res.data);
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error.response?.data?.message || "Không thể cập nhật trạng thái.",
+        };
+    }
+};
+
+export const huyDonHangAdmin = async (id: number, lyDo?: string): Promise<ApiResponse<null>> => {
+    try {
+        const res = await api.post(`/api/DonHang/${id}/cancel`, {
+            lyDo,
+        });
+        return mapApiResponse<null>(res.data);
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error.response?.data?.message || "Không thể hủy đơn hàng.",
         };
     }
 };

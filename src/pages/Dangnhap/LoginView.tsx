@@ -24,7 +24,10 @@ export default function LoginView() {
         setLoading(true);
 
         try {
-            const res = await DangNhap({ taiKhoan, matKhau });
+            const res = await DangNhap({ 
+                TaiKhoan: taiKhoan, 
+                MatKhau: matKhau 
+            });
 
             if (res.success) {
                 // Lưu remember me nếu được chọn
@@ -36,8 +39,8 @@ export default function LoginView() {
                 const userInfoStr = sessionStorage.getItem("userInfo");
                 if (userInfoStr) {
                     const userInfo = JSON.parse(userInfoStr);
-                    // Nếu role == 2 hoặc role === "Admin" thì chuyển đến trang admin
-                    if (userInfo.role === 2 || userInfo.role === "Admin" || userInfo.role === "2") {
+                    // Nếu role === "Admin" thì chuyển đến trang admin
+                    if (userInfo.role === "Admin") {
                         navigate("/admin");
                     } else {
                         navigate("/");

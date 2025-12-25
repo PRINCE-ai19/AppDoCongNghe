@@ -39,6 +39,7 @@ export interface ApiResponse<T> {
     message: string;
     data?: T;
 }
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 const mapResponse = <T>(payload: any): ApiResponse<T> => {
     if (payload?.Success !== undefined) {
@@ -184,10 +185,10 @@ export const capNhatProfile = async (id: number, formData: FormData): Promise<Ap
     } catch (error: any) {
         console.error("Lỗi khi cập nhật profile:", error);
         console.error("Error response:", error.response?.data);
-        const errorMessage = error.response?.data?.Message || 
-                           error.response?.data?.message || 
-                           error.message || 
-                           "Không thể cập nhật thông tin.";
+        const errorMessage = error.response?.data?.Message ||
+            error.response?.data?.message ||
+            error.message ||
+            "Không thể cập nhật thông tin.";
         return {
             success: false,
             message: errorMessage,

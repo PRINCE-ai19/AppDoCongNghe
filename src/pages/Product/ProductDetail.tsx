@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { layChiTietSanPham, toggleYeuThich, laySanPhamYeuThich, type SanPhamDetail } from '../../services/repositories/SanPham';
+import { layChiTietSanPham, toggleYeuThich, laySanPhamYeuThich, type ProductDetail } from '../../services/repositories/SanPham';
 import { themVaoGioHang } from '../../services/repositories/GioHang';
 import DanhGiaList from '../../components/DanhGiaList';
+import DanhGiaForm from '../../components/DanhGiaForm';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -13,7 +14,7 @@ import ShareIcon from '@mui/icons-material/Share';
 const ProductDetail = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [product, setProduct] = useState<SanPhamDetail | null>(null);
+    const [product, setProduct] = useState<ProductDetail | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [quantity, setQuantity] = useState(1);
@@ -31,26 +32,36 @@ const ProductDetail = () => {
             setLoading(true);
             try {
                 const res = await layChiTietSanPham(parseInt(id));
+                
                 if (res.success && res.data) {
                     setProduct(res.data);
-                    // Kiểm tra trạng thái yêu thích
-                    checkFavoriteStatus(parseInt(id));
+                    setLoading(false);
+                    // Kiểm tra trạng thái yêu thích (không block nếu lỗi)
+                    try {
+                        await checkFavoriteStatus(parseInt(id));
+                    } catch (favError) {
+                        console.warn('Lỗi khi kiểm tra yêu thích:', favError);
+                        // Không block việc hiển thị sản phẩm
+                    }
                 } else {
-                    // Nếu không tìm thấy, chuyển về trang chủ
-                    navigate('/');
+                    setLoading(false);
+                    // Không redirect ngay, để user thấy thông báo
                 }
-            } catch (error) {
+            } catch (error: any) {
+                // Không log error nếu là 404 (sản phẩm không tồn tại là trường hợp bình thường)
+                if (error?.response?.status !== 404) {
                 console.error('Lỗi khi tải chi tiết sản phẩm:', error);
-                navigate('/');
-            } finally {
+                }
                 setLoading(false);
+                // Không redirect ngay, để user thấy lỗi
             }
         };
 
         if (id) {
             loadProduct();
         }
-    }, [id, navigate]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id]);
 
     const checkFavoriteStatus = async (productId: number) => {
         const userInfoStr = sessionStorage.getItem('userInfo');
@@ -88,7 +99,7 @@ const ProductDetail = () => {
 
     const handleQuantityChange = (delta: number) => {
         const newQuantity = quantity + delta;
-        if (newQuantity >= 1 && product && product.soLuongTon && newQuantity <= product.soLuongTon) {
+        if (newQuantity >= 1 && product && product.soLuongTon && newQuantity <= (product.soLuongTon || 0)) {
             setQuantity(newQuantity);
         }
     };
@@ -170,7 +181,7 @@ const ProductDetail = () => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
                     <p className="mt-4 text-gray-600">Đang tải thông tin sản phẩm...</p>
@@ -181,7 +192,7 @@ const ProductDetail = () => {
 
     if (!product) {
         return (
-            <div className="container mx-auto px-4 py-16 text-center">
+            <div className="container mx-auto px-4 py-16 text-center bg-gray-50 min-h-screen">
                 <h2 className="text-2xl font-bold mb-4">Không tìm thấy sản phẩm</h2>
                 <Link to="/" className="text-blue-600 hover:text-blue-800">
                     Quay về trang chủ
@@ -190,7 +201,7 @@ const ProductDetail = () => {
         );
     }
 
-    const images = product.hinhAnhList && product.hinhAnhList.length > 0 
+    const images = (product?.hinhAnhList && Array.isArray(product.hinhAnhList) && product.hinhAnhList.length > 0)
         ? product.hinhAnhList 
         : [];
 
@@ -217,7 +228,7 @@ const ProductDetail = () => {
                                 {mainImage ? (
                                     <img
                                         src={mainImage}
-                                        alt={product.tenSanPham}
+                                        alt={product?.tenSanPham || 'Sản phẩm'}
                                         className="w-full h-full object-cover"
                                     />
                                 ) : (
@@ -230,7 +241,7 @@ const ProductDetail = () => {
                             {/* Thumbnail Images */}
                             {images.length > 1 && (
                                 <div className="grid grid-cols-4 gap-2">
-                                    {images.map((img, index) => (
+                                    {images.map((img: string, index: number) => (
                                         <button
                                             key={index}
                                             onClick={() => setSelectedImageIndex(index)}
@@ -242,7 +253,7 @@ const ProductDetail = () => {
                                         >
                                             <img
                                                 src={img}
-                                                alt={`${product.tenSanPham} - Ảnh ${index + 1}`}
+                                                alt={`${product?.tenSanPham || 'Sản phẩm'} - Ảnh ${index + 1}`}
                                                 className="w-full h-full object-cover"
                                             />
                                         </button>
@@ -256,14 +267,14 @@ const ProductDetail = () => {
                             {/* Title & Brand */}
                             <div>
                                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                                    {product.tenSanPham}
+                                    {product?.tenSanPham || 'Sản phẩm'}
                                 </h1>
-                                {product.thuongHieu && (
+                                {product?.thuongHieu && (
                                     <p className="text-lg text-gray-600">
                                         Thương hiệu: <span className="font-semibold">{product.thuongHieu}</span>
                                     </p>
                                 )}
-                                {product.danhMuc && (
+                                {product?.danhMuc && (
                                     <Link
                                         to={`/category/${product.danhMuc}`}
                                         className="text-blue-600 hover:text-blue-800 text-sm mt-2 inline-block"
@@ -276,10 +287,10 @@ const ProductDetail = () => {
                             {/* Price */}
                             <div className="border-t border-b border-gray-200 py-4">
                                 <div className="flex items-center gap-4">
-                                    {product.giaGiam && product.giaGiam < product.gia ? (
+                                    {product?.giaGiam && product.giaGiam < (product?.gia || 0) ? (
                                         <>
                                             <span className="text-2xl text-gray-500 line-through">
-                                                {formatPrice(product.gia)}
+                                                {formatPrice(product?.gia || 0)}
                                             </span>
                                             <span className="text-3xl font-bold text-red-600">
                                                 {formatPrice(product.giaGiam)}
@@ -287,7 +298,7 @@ const ProductDetail = () => {
                                         </>
                                     ) : (
                                         <span className="text-3xl font-bold text-blue-600">
-                                            {formatPrice(product.gia)}
+                                            {formatPrice(product?.gia || 0)}
                                         </span>
                                     )}
                                 </div>
@@ -295,7 +306,7 @@ const ProductDetail = () => {
 
                             {/* Stock Status */}
                             <div className="flex items-center gap-2">
-                                {product.soLuongTon && product.soLuongTon > 0 ? (
+                                {product?.soLuongTon && product.soLuongTon > 0 ? (
                                     <>
                                         <CheckCircleIcon className="text-green-500" />
                                         <span className="text-green-600 font-semibold">
@@ -310,7 +321,7 @@ const ProductDetail = () => {
                             </div>
 
                             {/* Quantity Selector */}
-                            {product.soLuongTon && product.soLuongTon > 0 && (
+                            {product?.soLuongTon && product.soLuongTon > 0 && (
                                 <div className="flex items-center gap-4">
                                     <span className="font-semibold">Số lượng:</span>
                                     <div className="flex items-center border border-gray-300 rounded-lg">
@@ -326,17 +337,17 @@ const ProductDetail = () => {
                                             value={quantity}
                                             onChange={(e) => {
                                                 const val = parseInt(e.target.value) || 1;
-                                                if (val >= 1 && val <= (product.soLuongTon || 1)) {
+                                                if (val >= 1 && val <= (product?.soLuongTon || 1)) {
                                                     setQuantity(val);
                                                 }
                                             }}
                                             min="1"
-                                            max={product.soLuongTon}
+                                            max={product?.soLuongTon || 1}
                                             className="w-16 text-center border-x border-gray-300 py-2 focus:outline-none"
                                         />
                                         <button
                                             onClick={() => handleQuantityChange(1)}
-                                            disabled={quantity >= (product.soLuongTon || 0)}
+                                            disabled={quantity >= (product?.soLuongTon || 0)}
                                             className="px-4 py-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             +
@@ -349,7 +360,7 @@ const ProductDetail = () => {
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <button
                                     onClick={handleAddToCart}
-                                    disabled={!product.soLuongTon || product.soLuongTon === 0}
+                                    disabled={!product?.soLuongTon || product.soLuongTon === 0}
                                     className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <ShoppingCartIcon />
@@ -381,7 +392,7 @@ const ProductDetail = () => {
                             </div>
 
                             {/* Product Details */}
-                            {product.moTa && (
+                            {product?.moTa && (
                                 <div className="border-t border-gray-200 pt-6">
                                     <h3 className="text-xl font-bold mb-4">Mô tả sản phẩm</h3>
                                     <div className="text-gray-700 whitespace-pre-line">
@@ -391,12 +402,12 @@ const ProductDetail = () => {
                             )}
 
                             {/* Cấu hình sản phẩm */}
-                            {product.cauHinhSanPhams && product.cauHinhSanPhams.length > 0 && (
+                            {product?.cauHinhSanPhams && Array.isArray(product.cauHinhSanPhams) && product.cauHinhSanPhams.length > 0 && (
                                 <div className="border-t border-gray-200 pt-6">
                                     <h3 className="text-xl font-bold mb-4">Cấu hình sản phẩm</h3>
                                     <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-6 border border-gray-200">
                                         <div className="space-y-3">
-                                            {product.cauHinhSanPhams.map((cauHinh, index) => (
+                                            {product.cauHinhSanPhams.map((cauHinh: { id: number; tenThongSo?: string; giaTri?: string }, index: number) => (
                                                 <div
                                                     key={cauHinh.id}
                                                     className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300 flex items-center gap-4"
@@ -421,20 +432,40 @@ const ProductDetail = () => {
 
                             {/* Additional Info */}
                             <div className="border-t border-gray-200 pt-6 space-y-2 text-sm text-gray-600">
-                                {product.ngayThem && (
+                                {product?.ngayThem && (
                                     <p>
                                         <span className="font-semibold">Ngày thêm:</span> {formatDate(product.ngayThem)}
                                     </p>
                                 )}
                                 <p>
-                                    <span className="font-semibold">Mã sản phẩm:</span> #{product.id}
+                                    <span className="font-semibold">Mã sản phẩm:</span> #{product?.id || 'N/A'}
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Đánh giá sản phẩm - Chỉ hiển thị danh sách */}
+                {/* Form đánh giá sản phẩm */}
+                {product && id && (() => {
+                    const userInfoStr = sessionStorage.getItem('userInfo');
+                    const userInfo = userInfoStr ? JSON.parse(userInfoStr) : null;
+                    const taiKhoanId = userInfo?.id;
+                    
+                    return taiKhoanId ? (
+                        <div className="mt-8">
+                            <DanhGiaForm 
+                                sanPhamId={parseInt(id)} 
+                                taiKhoanId={taiKhoanId}
+                                onSuccess={() => {
+                                    // Reload danh sách đánh giá sau khi submit thành công
+                                    window.dispatchEvent(new CustomEvent('reloadDanhGia'));
+                                }}
+                            />
+                        </div>
+                    ) : null;
+                })()}
+
+                {/* Đánh giá sản phẩm - Danh sách đánh giá */}
                 {product && id && (
                     <DanhGiaList sanPhamId={parseInt(id)} />
                 )}

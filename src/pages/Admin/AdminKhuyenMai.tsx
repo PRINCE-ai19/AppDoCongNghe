@@ -297,9 +297,9 @@ const AdminKhuyenMai: React.FC = () => {
 
     const loadAllProducts = async () => {
         try {
-            const res = await layTatCaSanPham();
-            if (res.success && res.data) {
-                setAllProducts(res.data);
+            const res = await layTatCaSanPham(1, 1000); // Lấy nhiều sản phẩm
+            if (res.success && res.data && res.data.items) {
+                setAllProducts(res.data.items);
             }
         } catch (error) {
             console.error(error);

@@ -17,6 +17,7 @@ export interface DanhGia {
         id: number;
         hoTen?: string;
         email?: string;
+        hinhAnh?: string;
     };
     sanPham?: {
         id: number;

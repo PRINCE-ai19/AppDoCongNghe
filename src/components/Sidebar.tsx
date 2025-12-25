@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import LoginIcon from '@mui/icons-material/Login';
 import DiscountIcon from '@mui/icons-material/Discount';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -27,6 +28,7 @@ export default function Sidebar() {
         { name: "Sản phẩm", icon: <DevicesIcon className="w-5 h-5" />, link: "sanpham" },
         { name: "Liên hệ", icon: <PhoneIcon className="w-5 h-5" />, link: "lienhe" },
         { name: "Tin tức", icon: <NewspaperIcon className="w-5 h-5" />, link: "tintuc" },
+        { name: "Đơn hàng", icon: <LocalShippingIcon className="w-5 h-5" />, link: "donhang" },
         { name: "Phiếu giảm giá", icon: <DiscountIcon className="w-5 h-5" />, link: "giamgia" },
         { name: "Khuyến mãi", icon: <LocalOfferIcon className="w-5 h-5" />, link: "khuyenmai" },
         { name: "Giỏ hàng", icon: <ShoppingCartIcon className="w-5 h-5" />, link: "giohang" },

@@ -42,9 +42,9 @@ const HomeView = () => {
         setLoading(true);
         try {
             // Load products
-            const productRes = await layTatCaSanPham();
-            if (productRes.success && productRes.data) {
-                const productList = productRes.data.filter(p => p.hienThi !== false);
+            const productRes = await layTatCaSanPham(1, 100); // Lấy 100 sản phẩm đầu tiên
+            if (productRes.success && productRes.data && productRes.data.items) {
+                const productList = productRes.data.items.filter(p => p.hienThi !== false);
                 // Lấy 8 sản phẩm đầu tiên làm featured
                 setFeaturedProducts(productList.slice(0, 8));
             }
@@ -112,9 +112,9 @@ const HomeView = () => {
             setFavoriteIds(favoriteIdsList);
 
             // Lấy thông tin sản phẩm yêu thích
-            const productRes = await layTatCaSanPham();
-            if (productRes.success && productRes.data) {
-                const favoriteList = productRes.data.filter(
+            const productRes = await layTatCaSanPham(1, 100); // Lấy 100 sản phẩm đầu tiên
+            if (productRes.success && productRes.data && productRes.data.items) {
+                const favoriteList = productRes.data.items.filter(
                     p => favoriteIdsList.includes(p.id) && p.hienThi !== false
                 );
                 setFavoriteProducts(favoriteList);
