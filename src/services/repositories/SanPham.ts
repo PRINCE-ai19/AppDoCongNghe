@@ -87,12 +87,27 @@ export interface CreateProductDto {
 
 export const themSanPham = async (sanpham: CreateProductDto): Promise<{ success: boolean; message: string }> => {
     try {
-        const res = await api.post(`/api/SanPham/Themsp`, sanpham);
+        const formData = new FormData();
+        formData.append("TenSanPham", sanpham.tenSanPham);
+        formData.append("DanhMucId", String(sanpham.danhMucId));
+        formData.append("ThuongHieu", sanpham.thuongHieu || "");
+        formData.append("Gia", String(sanpham.gia));
+        formData.append("SoLuongTon", String(sanpham.soLuongTon));
+        formData.append("MoTa", sanpham.moTa || "");
+        
+        if (sanpham.hinhanh && sanpham.hinhanh.length > 0) {
+            sanpham.hinhanh.forEach(file => {
+                formData.append("Hinhanh", file);
+            });
+        }
+
+        const res = await api.post(`/api/SanPham/ThemSp`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
         return res.data;
-        /* eslint-disable  @typescript-eslint/no-explicit-any */
     } catch (e: any) {
-        console.error("Lỗi thêm vào giỏ hàng:", e.message);
-        return { success: false, message: "Không thể thêm sản phẩm vào giỏ hàng." };
+        console.error("Lỗi thêm sản phẩm:", e.message);
+        return { success: false, message: "Không thể thêm sản phẩm." };
     }
 
 }
@@ -117,12 +132,26 @@ export const xoaSanPham = async (id: number): Promise<{ success: boolean; messag
 /**
  * Sửa sản phẩm (update)
  */
-export const suaSanPham = async (sanpham: CreateProductDto): Promise<{ success: boolean; message: string }> => {
+export const suaSanPham = async (id: number, sanpham: CreateProductDto): Promise<{ success: boolean; message: string }> => {
     try {
-        if (!sanpham.id) {
-            return { success: false, message: "ID sản phẩm không hợp lệ." };
+        const formData = new FormData();
+        formData.append("Id", String(id));
+        formData.append("TenSanPham", sanpham.tenSanPham);
+        formData.append("DanhMucId", String(sanpham.danhMucId));
+        formData.append("ThuongHieu", sanpham.thuongHieu || "");
+        formData.append("Gia", String(sanpham.gia));
+        formData.append("SoLuongTon", String(sanpham.soLuongTon));
+        formData.append("MoTa", sanpham.moTa || "");
+        
+        if (sanpham.hinhanh && sanpham.hinhanh.length > 0) {
+            sanpham.hinhanh.forEach(file => {
+                formData.append("Hinhanh", file);
+            });
         }
-        const res = await api.put(`/api/SanPham/${sanpham.id}`, sanpham);
+
+        const res = await api.put(`/api/SanPham/SuaSp/${id}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
         return res.data || { success: false, message: "Không thể cập nhật sản phẩm." };
     } catch (e: any) {
         console.error("Lỗi sửa sản phẩm:", e.message);
