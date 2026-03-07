@@ -82,16 +82,19 @@ const ProductListView = () => {
         setLoading(true);
         try {
             let result;
+            let productsToSet: SanPham[] = [];
             
             if (searchKeyword.trim()) {
-                // Tìm kiếm
+                // Tìm kiếm - Backend trả về ApiResponse<Product[]>
                 result = await searchProducts(searchKeyword.trim());
+                if (result.success && Array.isArray(result.data)) {
+                    productsToSet = result.data;
+                }
             } else if (selectedCategory) {
-                // Lọc theo danh mục
+                // Lọc theo danh mục - Backend trả về ApiResponse<ProductCategory[]> (đã được fix format tương đương Product)
                 result = await laySanPhamTheoDanhMuc(selectedCategory);
-                // Convert SanPhamCategory[] to SanPham[]
                 if (result.success && result.data) {
-                    const converted = result.data.map(item => ({
+                    productsToSet = result.data.map(item => ({
                         id: item.id,
                         tenSanPham: item.tenSanPham,
                         thuongHieu: item.thuongHieu,
@@ -105,22 +108,18 @@ const ProductListView = () => {
                         hinhAnhDaiDien: item.anhDaiDien,
                         hinhAnh: []
                     }));
-                    setProducts(converted.filter(p => p.hienThi !== false));
-                    setLoading(false);
-                    return;
                 }
             } else {
-                // Lấy tất cả với pagination
+                // Lấy tất cả với pagination - Backend trả về ProductPagingResponse (data.items)
                 result = await layTatCaSanPham(currentPage, itemsPerPage);
+                if (result.success && result.data && result.data.items) {
+                    productsToSet = result.data.items;
+                }
             }
 
-            if (result.success && result.data && result.data.items) {
-                // Filter products that are visible (hienThi !== false)
-                const filtered = result.data.items.filter((p: SanPham) => p.hienThi !== false);
-                setProducts(filtered);
-            } else {
-                setProducts([]);
-            }
+            // Filter products that are visible (hienThi !== false)
+            const filtered = productsToSet.filter((p: SanPham) => p.hienThi !== false);
+            setProducts(filtered);
         } catch (error) {
             console.error('Lỗi khi tải sản phẩm:', error);
             setProducts([]);
