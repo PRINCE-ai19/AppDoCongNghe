@@ -4,11 +4,11 @@ import { getToken } from "../repositories/DangNhap";
 
 
 const api = axios.create({
-    baseURL: "https://karter-ungreened-armanda.ngrok-free.dev",
+    baseURL: "https://webappdocongnghe.onrender.com",
     timeout: 7000,
     headers: {
         "Content-Type": "application/json",
-        "ngrok-skip-browser-warning": "69420"
+        // "ngrok-skip-browser-warning": "69420"
     }
 })
 
