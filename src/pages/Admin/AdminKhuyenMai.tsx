@@ -14,7 +14,7 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import RemoveIcon from "@mui/icons-material/Remove";
+
 import {
     layKhuyenMaiPhanTrang,
     taoKhuyenMai,
@@ -23,7 +23,6 @@ import {
     ganSanPhamKhuyenMai,
     xoaSanPhamKhoiKhuyenMai,
     laySanPhamTrongKhuyenMai,
-    layTatCaKhuyenMai,
     type KhuyenMai,
     type KhuyenMaiRequest,
     type SanPhamTrongKhuyenMai,
@@ -58,7 +57,7 @@ const AdminKhuyenMai: React.FC = () => {
     const [productToDelete, setProductToDelete] = useState<SanPhamTrongKhuyenMai | null>(null);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize] = useState(10);
     const [total, setTotal] = useState(0);
 
     const showMessage = (type: "success" | "error", text: string) => {

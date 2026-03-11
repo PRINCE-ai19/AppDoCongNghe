@@ -49,7 +49,7 @@ const AdminProduct = () => {
     // Form state
     const [formData, setFormData] = useState<SanPhamRequest>({
         tenSanPham: "",
-        danhMucId: undefined,
+        danhMucId: 0,
         thuongHieu: "",
         gia: 0,
         soLuongTon: 0,
@@ -172,7 +172,7 @@ const AdminProduct = () => {
         setEditingItem(null);
         setFormData({
             tenSanPham: "",
-            danhMucId: undefined,
+            danhMucId: 0,
             thuongHieu: "",
             gia: 0,
             soLuongTon: 0,
@@ -191,7 +191,7 @@ const AdminProduct = () => {
         setEditingItem(item);
         setFormData({
             tenSanPham: item.tenSanPham,
-            danhMucId: danhMucList.find(dm => dm.tenDanhMuc === item.danhMuc)?.id,
+            danhMucId: danhMucList.find(dm => dm.tenDanhMuc === item.danhMuc)?.id ?? 0,
             thuongHieu: item.thuongHieu || "",
             gia: item.gia,
             soLuongTon: item.soLuongTon || 0,
@@ -201,7 +201,7 @@ const AdminProduct = () => {
         // Format giá để hiển thị
         setGiaDisplay(item.gia ? formatNumber(item.gia) : '');
         // Hiển thị ảnh hiện tại nếu có
-        setExistingImages(item.hinhAnh || []);
+        setExistingImages([]);
         revokePreviewUrls(newImagePreviews);
         setNewImagePreviews([]);
         setShowModal(true);
@@ -215,7 +215,7 @@ const AdminProduct = () => {
         setEditingItem(null);
         setFormData({
             tenSanPham: "",
-            danhMucId: undefined,
+            danhMucId: 0,
             thuongHieu: "",
             gia: 0,
             soLuongTon: 0,
@@ -330,10 +330,10 @@ const AdminProduct = () => {
             const payload: SanPhamRequest = {
                 tenSanPham: formData.tenSanPham.trim(),
                 danhMucId: formData.danhMucId,
-                thuongHieu: formData.thuongHieu?.trim() || undefined,
+                thuongHieu: formData.thuongHieu?.trim() || "",
                 gia: formData.gia,
                 soLuongTon: formData.soLuongTon,
-                moTa: formData.moTa?.trim() || undefined,
+                moTa: formData.moTa?.trim() || "",
                 hinhanh: formData.hinhanh && formData.hinhanh.length > 0 ? formData.hinhanh : undefined,
             };
 
@@ -767,7 +767,7 @@ const AdminProduct = () => {
                                         <select
                                             value={formData.danhMucId || ""}
                                             onChange={(e) =>
-                                                setFormData({ ...formData, danhMucId: e.target.value ? Number(e.target.value) : undefined })
+                                                setFormData({ ...formData, danhMucId: e.target.value ? Number(e.target.value) : 0 })
                                             }
                                             required
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -945,7 +945,7 @@ const AdminProduct = () => {
                                                     {existingImages.map((img) => (
                                                         <div key={img.id} className="relative group">
                                                             <img
-                                                                src={img.hinhAnh}
+                                                                src={img.url}
                                                                 alt="Ảnh sản phẩm"
                                                                 className="w-full h-24 object-cover rounded-lg"
                                                             />

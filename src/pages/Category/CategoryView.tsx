@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { layDanhMucTheoId, type DanhMuc } from '../../services/repositories/DanhMuc';
-import { laySanPhamTheoDanhMuc, type SanPhamCategory, toggleYeuThich, laySanPhamYeuThich } from '../../services/repositories/SanPham';
+import { laySanPhamTheoDanhMuc, type ProductCategory as SanPhamCategory, toggleYeuThich, laySanPhamYeuThich } from '../../services/repositories/SanPham';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';

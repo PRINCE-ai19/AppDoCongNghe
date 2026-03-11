@@ -178,7 +178,7 @@ const DanhGiaForm = ({ sanPhamId, taiKhoanId, onSuccess }: DanhGiaFormProps) => 
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-3">
                                         <span className="text-lg font-semibold text-gray-800">Đánh giá của bạn:</span>
-                                        {renderStars(userDanhGia.soSao || 0, 24, true)}
+                                        {renderStars(userDanhGia.soSao || 0, true)}
                                     </div>
                                     {userDanhGia.noiDung && (
                                         <div className="bg-white rounded-lg p-4 border-l-4 border-blue-500 shadow-sm">

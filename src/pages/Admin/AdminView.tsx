@@ -113,7 +113,7 @@ const AdminView = () => {
                                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dx={-10} tickFormatter={(value: number) => `${value / 1000000}M`} />
                                 <Tooltip
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                                    formatter={(value: number) => [formatPrice(value), 'Doanh thu']}
+                                    formatter={(value) => { if (value === undefined) return ['', '']; return [formatPrice(Number(value)), 'Doanh thu']; }}
                                 />
                                 <Line
                                     type="monotone"

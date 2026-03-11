@@ -212,7 +212,7 @@ const DanhGiaList = ({ sanPhamId }: DanhGiaListProps) => {
                             </div>
                         ) : (
                             <>
-                                {danhGias.map((danhGia, index) => (
+                                {danhGias.map((danhGia) => (
                                     <div 
                                         key={danhGia.id} 
                                         className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 p-6"
