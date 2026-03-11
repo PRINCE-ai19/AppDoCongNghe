@@ -94,7 +94,7 @@ export const themSanPham = async (sanpham: CreateProductDto): Promise<{ success:
         formData.append("Gia", String(sanpham.gia));
         formData.append("SoLuongTon", String(sanpham.soLuongTon));
         formData.append("MoTa", sanpham.moTa || "");
-        
+
         if (sanpham.hinhanh && sanpham.hinhanh.length > 0) {
             sanpham.hinhanh.forEach(file => {
                 formData.append("Hinhanh", file);
@@ -142,7 +142,7 @@ export const suaSanPham = async (id: number, sanpham: CreateProductDto): Promise
         formData.append("Gia", String(sanpham.gia));
         formData.append("SoLuongTon", String(sanpham.soLuongTon));
         formData.append("MoTa", sanpham.moTa || "");
-        
+
         if (sanpham.hinhanh && sanpham.hinhanh.length > 0) {
             sanpham.hinhanh.forEach(file => {
                 formData.append("Hinhanh", file);

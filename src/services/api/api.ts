@@ -4,7 +4,7 @@ import { getToken } from "../repositories/DangNhap";
 
 
 const api = axios.create({
-    baseURL: "https://localhost:7063",
+    baseURL: "https://karter-ungreened-armanda.ngrok-free.dev",
     timeout: 7000,
     headers: {
         "Content-Type": "application/json"

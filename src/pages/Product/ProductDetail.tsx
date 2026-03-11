@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { layChiTietSanPham, toggleYeuThich, laySanPhamYeuThich, type ProductDetail } from '../../services/repositories/SanPham';
+import { layChiTietSanPham, toggleYeuThich, laySanPhamYeuThich, type ProductDetail as ProductDetailType } from '../../services/repositories/SanPham';
 import { themVaoGioHang } from '../../services/repositories/GioHang';
 import DanhGiaList from '../../components/DanhGiaList';
 import DanhGiaForm from '../../components/DanhGiaForm';
@@ -14,7 +14,7 @@ import ShareIcon from '@mui/icons-material/Share';
 const ProductDetail = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [product, setProduct] = useState<ProductDetail | null>(null);
+    const [product, setProduct] = useState<ProductDetailType | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [quantity, setQuantity] = useState(1);

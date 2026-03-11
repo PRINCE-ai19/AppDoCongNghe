@@ -2,11 +2,11 @@
 
 
 import { useState, useEffect } from 'react';
-import { 
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-    BarChart, Bar, Cell 
+import {
+    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+    BarChart, Bar, Cell
 } from 'recharts';
-import { 
+import {
     layDoanhThuTheoThang, layTopFavoriteProducts, layBestSellingProducts
 } from '../../services/repositories/ThongKe';
 import type { DoanhThuThang, TopFavoriteProduct, BestSellingProduct } from '../../services/repositories/ThongKe';
@@ -72,29 +72,29 @@ const AdminView = () => {
 
             {/* Top Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard 
-                    title="Doanh thu năm nay" 
+                <StatCard
+                    title="Doanh thu năm nay"
                     value={formatPrice(revenueData.reduce((acc, curr) => acc + curr.doanhThu, 0))}
                     icon={<TrendingUpIcon className="text-blue-600" />}
                     trend="+12% so với năm ngoái"
                     color="bg-blue-50"
                 />
-                <StatCard 
-                    title="Yêu thích nhiều nhất" 
+                <StatCard
+                    title="Yêu thích nhiều nhất"
                     value={topFavorites[0]?.tenSanPham || 'N/A'}
                     subtitle={`${topFavorites[0]?.soLuongYeuThich || 0} lượt thích`}
                     icon={<FavoriteIcon className="text-pink-600" />}
                     color="bg-pink-50"
                 />
-                <StatCard 
-                    title="Bán chạy nhất" 
+                <StatCard
+                    title="Bán chạy nhất"
                     value={bestSellers[0]?.tenSanPham || 'N/A'}
                     subtitle={`${bestSellers[0]?.soLuongDaBan || 0} sản phẩm`}
                     icon={<ShoppingBagIcon className="text-purple-600" />}
                     color="bg-purple-50"
                 />
-                <StatCard 
-                    title="Tổng số tháng" 
+                <StatCard
+                    title="Tổng số tháng"
                     value="12"
                     icon={<PeopleIcon className="text-orange-600" />}
                     color="bg-orange-50"
@@ -109,17 +109,17 @@ const AdminView = () => {
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={revenueData}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                                <XAxis dataKey="thang" axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} dx={-10} tickFormatter={(value: number) => `${value/1000000}M`} />
-                                <Tooltip 
+                                <XAxis dataKey="thang" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dy={10} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dx={-10} tickFormatter={(value: number) => `${value / 1000000}M`} />
+                                <Tooltip
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                                     formatter={(value: number) => [formatPrice(value), 'Doanh thu']}
                                 />
-                                <Line 
-                                    type="monotone" 
-                                    dataKey="doanhThu" 
-                                    stroke="#3b82f6" 
-                                    strokeWidth={4} 
+                                <Line
+                                    type="monotone"
+                                    dataKey="doanhThu"
+                                    stroke="#3b82f6"
+                                    strokeWidth={4}
                                     dot={{ r: 6, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }}
                                     activeDot={{ r: 8, strokeWidth: 0 }}
                                 />
@@ -135,9 +135,9 @@ const AdminView = () => {
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={bestSellers} layout="vertical" margin={{ left: -20 }}>
                                 <XAxis type="number" hide />
-                                <YAxis dataKey="tenSanPham" type="category" axisLine={false} tickLine={false} width={120} tick={{fontSize: 12}} />
-                                <Tooltip 
-                                    cursor={{fill: '#f8fafc'}}
+                                <YAxis dataKey="tenSanPham" type="category" axisLine={false} tickLine={false} width={120} tick={{ fontSize: 12 }} />
+                                <Tooltip
+                                    cursor={{ fill: '#f8fafc' }}
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                                 />
                                 <Bar dataKey="soLuongDaBan" radius={[0, 4, 4, 0]}>

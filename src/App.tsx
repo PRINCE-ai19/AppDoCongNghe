@@ -10,7 +10,6 @@ import AdminProduct from "./pages/Admin/AdminProduct";
 import AdminCategoryView from "./pages/Admin/AdminCategoryView";
 import AccountView from "./pages/Admin/AccountView";
 import HomeView from "./pages/Home/HomeView";
-import ProductDetail from "./pages/Product/ProductDetail";
 import CategoryView from "./pages/Category/CategoryView";
 import CartView from "./pages/Cart/CartView";
 import CheckoutView from "./pages/Checkout/CheckoutView";
@@ -27,6 +26,7 @@ import ContactView from "./pages/Contact/ContactView";
 import AdminContact from "./pages/Admin/AdminContact";
 import AdminKhuyenMai from "./pages/Admin/AdminKhuyenMai";
 import AdminOrder from "./pages/Admin/AdminOrder";
+import ProductDetail from "./pages/Product/ProductDetail";
 
 function App() {
   return (
@@ -53,12 +53,12 @@ function App() {
         <Route path="sanpham" element={<AdminProduct />} />
         <Route path="danhmuc" element={<AdminCategoryView />} />
         <Route path="taikhoan" element={<AccountView />} />
-        <Route path="tintuc" element={<AdminNew/>}/>
-        <Route path="giamgia" element={<AdminDiscount/>}/>
-        <Route path="khuyenmai" element={<AdminKhuyenMai/>}/>
-        <Route path="giohang" element={<AdminCart/>}/>
-        <Route path="lienhe" element={<AdminContact/>}/>
-        <Route path="donhang" element={<AdminOrder/>}/>
+        <Route path="tintuc" element={<AdminNew />} />
+        <Route path="giamgia" element={<AdminDiscount />} />
+        <Route path="khuyenmai" element={<AdminKhuyenMai />} />
+        <Route path="giohang" element={<AdminCart />} />
+        <Route path="lienhe" element={<AdminContact />} />
+        <Route path="donhang" element={<AdminOrder />} />
       </Route>
 
       {/* Auth Routes */}
